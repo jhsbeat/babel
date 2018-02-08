@@ -1,13 +1,15 @@
 defmodule BabelWeb.RoomChannel do
   use BabelWeb, :channel
+  import Ecto.Query
+  import Ecto
+  alias Babel.Repo
 
-  def join("room:" <> room_id, payload, socket) do
+  def join("rooms:" <> room_id, payload, socket) do
     if authorized?(payload) do
-       
       room_id = String.to_integer(room_id)
       room = Repo.get!(Babel.Chat.Room, room_id)
       messages = Repo.all(from m in assoc(room, :messages),
-                            order_by: [asc: a.inserted_at],
+                            order_by: [asc: m.inserted_at],
                             limit: 200,
                             preload: [:user])
       resp = %{messages: Phoenix.View.render_many(messages, BabelWeb.MessageView, "message.json")}
@@ -17,11 +19,16 @@ defmodule BabelWeb.RoomChannel do
     end
   end
 
+  def handle_in(event, params, socket) do
+    user = Repo.get(Babel.Accounts.User, socket.assigns.user_id)
+    handle_in(event, params, user, socket)
+  end
+
   def handle_in("new_message", message, user, socket) do
     changeset = 
       user
-      |> Ecto.build_assoc(:messages, room_id: socket.assigns.room_id)
-      |> Babel.Chat.Message.changeset(params)
+      |> build_assoc(:messages, room_id: socket.assigns.room_id)
+      |> Babel.Chat.Message.changeset(message)
 
     case Repo.insert(changeset) do
       {:ok, message} ->

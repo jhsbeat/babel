@@ -3,7 +3,6 @@ defmodule Babel.Chat.Room do
   import Ecto.Changeset
   alias Babel.Chat.Room
 
-
   schema "rooms" do
     field :title, :string
     field :description, :string

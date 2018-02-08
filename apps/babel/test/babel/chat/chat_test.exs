@@ -1,6 +1,6 @@
 defmodule Babel.ChatTest do
   use Babel.DataCase
-
+  import Babel.TestHelpers
   alias Babel.Chat
 
   describe "rooms" do
@@ -10,12 +10,9 @@ defmodule Babel.ChatTest do
     @update_attrs %{description: "some updated description", title: "some updated title"}
     @invalid_attrs %{description: nil, title: nil}
 
-    def room_fixture(attrs \\ %{}) do
-      {:ok, room} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Chat.create_room()
-
+    def room_fixture(_attrs \\ %{}) do
+      user = insert_user(name: "Rebecca")
+      room = insert_room(user, @valid_attrs)
       room
     end
 
@@ -30,7 +27,8 @@ defmodule Babel.ChatTest do
     end
 
     test "create_room/1 with valid data creates a room" do
-      assert {:ok, %Room{} = room} = Chat.create_room(@valid_attrs)
+      user = insert_user(name: "Rebecca")
+      assert {:ok, %Room{} = room} = Chat.create_room(Map.put(@valid_attrs, :user_id, user.id))
       assert room.description == "some description"
       assert room.title == "some title"
     end

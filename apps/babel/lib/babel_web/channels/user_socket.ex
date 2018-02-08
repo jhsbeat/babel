@@ -2,7 +2,7 @@ defmodule BabelWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", BabelWeb.RoomChannel
+  channel "rooms:*", BabelWeb.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
