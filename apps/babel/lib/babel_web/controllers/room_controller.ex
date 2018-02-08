@@ -16,7 +16,7 @@ defmodule BabelWeb.RoomController do
   end
 
   def create(conn, %{"room" => room_params}) do
-    case Chat.create_room(room_params) do
+    case Chat.create_room(Map.put(room_params, "user_id", conn.assigns.current_user.id)) do
       {:ok, room} ->
         conn
         |> put_flash(:info, "Room created successfully.")

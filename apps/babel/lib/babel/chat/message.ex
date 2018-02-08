@@ -12,7 +12,7 @@ defmodule Babel.Chat.Message do
     timestamps()
   end
 
-  @required [:body]
+  @required [:room_id, :user_id, :body]
   @optional []
   @doc false
   def changeset(%Message{} = message, attrs) do

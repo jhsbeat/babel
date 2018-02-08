@@ -13,7 +13,7 @@ defmodule Babel.Chat.Room do
     timestamps()
   end
 
-  @required [:title]
+  @required [:user_id, :title]
   @optional [:description]
   @doc false
   def changeset(%Room{} = room, attrs) do
