@@ -40,3 +40,15 @@ $ mix phx.gen.html Chat Room rooms title:string description:text user_id:referen
 ```shell
 $ mix phx.gen.schema Chat.Message messages room_id:references:rooms user_id:references:users body:string
 ```
+
+#### Gettext 설정 (for I18n support)
+```shell
+$ mix gettext.extract
+$ mix gettext.merge priv/gettext
+$ mix gettext.merge priv/gettext --locale ko
+# OR
+$ mix gettext.extract --merge
+
+
+
+```
