@@ -48,7 +48,9 @@ $ mix gettext.merge priv/gettext
 $ mix gettext.merge priv/gettext --locale ko
 # OR
 $ mix gettext.extract --merge
+```
 
-
-
+#### RoomChannel 생성
+```shell
+$ mix phx.gen.channel Room
 ```
