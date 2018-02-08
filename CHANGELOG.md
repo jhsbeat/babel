@@ -35,3 +35,8 @@ $ mix ecto.migrate
 ```shell
 $ mix phx.gen.html Chat Room rooms title:string description:text user_id:references:users
 ```
+
+#### Chat.Message schema 생성
+```shell
+$ mix phx.gen.schema Chat.Message messages room_id:references:rooms user_id:references:users body:string
+```

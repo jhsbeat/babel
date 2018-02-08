@@ -7,15 +7,18 @@ defmodule Babel.Chat.Room do
   schema "rooms" do
     field :title, :string
     field :description, :string
-    field :user_id, :id
+    belongs_to :user, Babel.Accounts.User
+    has_many :messages, Babel.Chat.Message
 
     timestamps()
   end
 
+  @required [:title]
+  @optional [:description]
   @doc false
   def changeset(%Room{} = room, attrs) do
     room
-    |> cast(attrs, [:title, :description])
-    |> validate_required([:title, :description])
+    |> cast(attrs, @required ++ @optional)
+    |> validate_required(@required)
   end
 end
