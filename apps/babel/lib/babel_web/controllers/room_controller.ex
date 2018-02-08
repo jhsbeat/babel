@@ -1,5 +1,6 @@
 defmodule BabelWeb.RoomController do
   use BabelWeb, :controller
+  plug :authenticate_user when action not in [:index]
 
   alias Babel.Chat
   alias Babel.Chat.Room

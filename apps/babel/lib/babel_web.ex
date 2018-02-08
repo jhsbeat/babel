@@ -23,6 +23,7 @@ defmodule BabelWeb do
       import Plug.Conn
       import BabelWeb.Router.Helpers
       import BabelWeb.Gettext
+      import BabelWeb.Auth, only: [authenticate_user: 2]
     end
   end
 

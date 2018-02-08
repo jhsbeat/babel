@@ -5,7 +5,7 @@ defmodule BabelWeb.UserController do
 
   def new(conn, _params) do
     cond do
-      user = conn.assigns[:current_user] ->
+      _user = conn.assigns[:current_user] ->
         conn
         |> put_flash(:error, "Already logged in.")
         |> redirect(to: page_path(conn, :index))

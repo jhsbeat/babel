@@ -51,4 +51,18 @@ defmodule BabelWeb.Auth do
     |> assign(:current_user, user)
     |> assign(:user_token, token)
   end
+
+  import Phoenix.Controller
+  alias BabelWeb.Router.Helpers
+
+  def authenticate_user(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access that page")
+      |> redirect(to: Helpers.page_path(conn, :index))
+      |> halt()
+    end
+  end
 end
