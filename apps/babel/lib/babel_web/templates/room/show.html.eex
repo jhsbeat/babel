@@ -1,18 +1,22 @@
-<h2>Show Room</h2>
+<h2><%= @room.title %></h2>
+<p><%= text_to_html(@room.description) %></h2>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= dgettext "room", "messages" %></h3>
+      </div>
+      <div id="msg-container" class="panel-body messages">
+      </div>
+      <div class="panel-footer">
+        <textarea id="msg-input" rows="3" class="form-control" placeholder="Comment..."></textarea>
+        <br />
+        <button id="msg-submit" class="btn btn-primary form-control" type="submit">
+          <%= dgettext "button", "send" %>
+        </button>
+      </div>
+  </div>
+</div>
 
-<ul>
 
-  <li>
-    <strong>Title:</strong>
-    <%= @room.title %>
-  </li>
-
-  <li>
-    <strong>Description:</strong>
-    <%= @room.description %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: room_path(@conn, :edit, @room) %></span>
 <span><%= link "Back", to: room_path(@conn, :index) %></span>
