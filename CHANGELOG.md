@@ -1,0 +1,32 @@
+#### Umbrella 프로젝트 생성
+```shell
+$ mix new babel --umbrella
+```
+
+#### OTP app 생성
+```shell
+$ cd babel/apps
+$ mix new trans --sup
+```
+
+#### Phoenix app 생성
+```shell
+$ cd ../
+$ mix local.hex
+$ mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez
+
+$ cd apps
+$ mix phx.new babel
+
+... 데이터베이스 설정 ...
+
+$ cd ../
+$ mix ecto.create
+```
+
+#### User schema 생성
+```shell
+$ cd apps/babel
+$ mix phx.gen.schema Accounts.User users email:string password_hash:string name:string is_admin:boolean
+$ mix ecto.migrate
+```
