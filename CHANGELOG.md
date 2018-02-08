@@ -30,3 +30,8 @@ $ cd apps/babel
 $ mix phx.gen.schema Accounts.User users email:string password_hash:string name:string is_admin:boolean
 $ mix ecto.migrate
 ```
+
+#### Chat.Room context 생성
+```shell
+$ mix phx.gen.html Chat Room rooms title:string description:text user_id:references:users
+```
