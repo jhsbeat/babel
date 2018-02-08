@@ -1,25 +1,41 @@
 defmodule BabelWeb.RoomChannel do
   use BabelWeb, :channel
 
-  def join("room:lobby", payload, socket) do
+  def join("room:" <> room_id, payload, socket) do
     if authorized?(payload) do
-      {:ok, socket}
+       
+      room_id = String.to_integer(room_id)
+      room = Repo.get!(Babel.Chat.Room, room_id)
+      messages = Repo.all(from m in assoc(room, :messages),
+                            order_by: [asc: a.inserted_at],
+                            limit: 200,
+                            preload: [:user])
+      resp = %{messages: Phoenix.View.render_many(messages, BabelWeb.MessageView, "message.json")}
+      {:ok, resp, assign(socket, :room_id, room_id)}
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
+  def handle_in("new_message", message, user, socket) do
+    changeset = 
+      user
+      |> Ecto.build_assoc(:messages, room_id: socket.assigns.room_id)
+      |> Babel.Chat.Message.changeset(params)
+
+    case Repo.insert(changeset) do
+      {:ok, message} ->
+        broadcast_message(socket, message)
+        {:reply, :ok, socket}
+      {:error, changeset} ->
+        {:reply, {:error, %{errors: changeset}}, socket}
+    end
   end
 
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (room:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
-    {:noreply, socket}
+  defp broadcast_message(socket, message) do
+    message = Repo.preload(message, :user)
+    rendered_message = Phoenix.View.render(BabelWeb.MessageView, "message.json", %{message: message})
+    broadcast! socket, "new_message", rendered_message
   end
 
   # Add authorization logic here as required.

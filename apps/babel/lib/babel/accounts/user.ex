@@ -11,6 +11,8 @@ defmodule Babel.Accounts.User do
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
     field :password_hash, :string
+    has_many :rooms, Babel.Chat.Room
+    has_many :messages, Babel.Chat.Message
 
     timestamps()
   end
