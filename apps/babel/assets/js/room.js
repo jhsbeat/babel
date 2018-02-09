@@ -76,6 +76,7 @@ let Room = {
     }
     let username = this.esc(user.display_name)
     if(trans_backend){
+      template.setAttribute("class", "text-primary")
       username += `(${trans_backend})`
     }
     template.innerHTML = `

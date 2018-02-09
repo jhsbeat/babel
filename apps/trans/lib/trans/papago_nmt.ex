@@ -7,8 +7,7 @@ defmodule Trans.PapagoNMT do
 
   def fetch(query_str, query_ref, owner, _limit) do
     query_str
-    |> fetch_json()
-    # |> xpath(~x"/queryresult/pod[contains(@title, 'Result') or contains(@title, 'Definitions')]/subpod/plaintext/text()")
+    |> fetch_result()
     |> send_results(query_ref, owner)
   end
 
@@ -20,20 +19,26 @@ defmodule Trans.PapagoNMT do
     send(owner, {:results, query_ref, results})
   end
 
-  @http Application.get_env(:trans, :papago_nmt)[:http_client] || :httpc
-  defp fetch_json(query_str) do
+  defp fetch_result(query_str) do
+    url = "https://openapi.naver.com/v1/papago/n2mt"
+    body = [
+      source: "ko",
+      target: "en",
+      text: query_str
+    ]
+    headers = [
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+      "X-Naver-Client-Id": Application.get_env(:trans, :papago_nmt)[:client_id],
+      "X-Naver-Client-Secret": Application.get_env(:trans, :papago_nmt)[:client_secret]
+    ]
+    options = [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
 
-    # TODO : Implement PapagoNMT API
-    # request = {
-    #   String.to_charlist("http://openapi.naver.com/v1/papago/n2mt?source=ko&target=en&text=#{URI.encode(query_str)}"), 
-    #   [
-    #     {'Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8'},
-    #     {'X-Naver-Client-Id', String.to_charlist(Application.get_env(:trans, :papago_nmt)[:client_id])},
-    #     {'X-Naver-Client-Secret', String.to_charlist(Application.get_env(:trans, :papago_nmt)[:client_secret])}
-    #   ]
-    # }
-    # {:ok, {_, _, body}} = @http.request(:get, request, [], [])
-    body = "This is the hard-coded translation."
-    body
+    case HTTPoison.request(:post, url, {:form, body}, headers, options) do
+      {:ok, %HTTPoison.Response{} = response} -> 
+        {:ok, map} = response.body |> Poison.decode()
+        map["message"]["result"]["translatedText"]
+      {:error, %HTTPoison.Error{} = error} -> 
+        {:error, error}
+    end
   end
 end
