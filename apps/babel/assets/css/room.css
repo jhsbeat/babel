@@ -1,3 +1,8 @@
 #msg-container {
   min-height: 250px;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+#msg-input {
+  margin-bottom: 10px;
 }
