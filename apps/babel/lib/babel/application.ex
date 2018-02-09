@@ -12,6 +12,7 @@ defmodule Babel.Application do
       supervisor(Babel.Repo, []),
       # Start the endpoint when the application starts
       supervisor(BabelWeb.Endpoint, []),
+      supervisor(BabelWeb.Presence, []),
       # Start your own worker by calling: Babel.Worker.start_link(arg1, arg2, arg3)
       # worker(Babel.Worker, [arg1, arg2, arg3]),
     ]

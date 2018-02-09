@@ -10,7 +10,11 @@
 msgid ""
 msgstr ""
 
-#, elixir-format
 #: lib/babel_web/templates/room/show.html.eex:7
 msgid "messages"
+msgstr ""
+
+#, elixir-format
+#: lib/babel_web/templates/room/show.html.eex:23
+msgid "user_list"
 msgstr ""

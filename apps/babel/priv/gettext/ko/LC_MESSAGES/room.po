@@ -10,7 +10,11 @@ msgid ""
 msgstr ""
 "Language: ko\n"
 
-#, elixir-format
 #: lib/babel_web/templates/room/show.html.eex:7
 msgid "messages"
-msgstr ""
+msgstr "대화창"
+
+#, elixir-format
+#: lib/babel_web/templates/room/show.html.eex:23
+msgid "user_list"
+msgstr "현재 접속자"

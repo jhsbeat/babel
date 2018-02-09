@@ -54,3 +54,8 @@ $ mix gettext.extract --merge
 ```shell
 $ mix phx.gen.channel Room
 ```
+
+#### Presence 생성
+```shell
+$ mix phx.gen.presence
+```

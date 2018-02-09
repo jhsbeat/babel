@@ -1,8 +1,17 @@
 #msg-container {
-  min-height: 250px;
-  max-height: 250px;
+  height: 250px;
   overflow-y: scroll;
 }
 #msg-input {
   margin-bottom: 10px;
+}
+#user-list {
+  height: 360px;
+  overflow-y: scroll;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#user-list > li {
+  padding-bottom: 10px;
 }

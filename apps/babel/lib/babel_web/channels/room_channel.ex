@@ -1,11 +1,15 @@
 defmodule BabelWeb.RoomChannel do
   use BabelWeb, :channel
+
   import Ecto.Query
   import Ecto
+
   alias Babel.Repo
+  alias BabelWeb.Presence
 
   def join("rooms:" <> room_id, payload, socket) do
     if authorized?(payload) do
+      send(self(), "after_join")
       room_id = String.to_integer(room_id)
       room = Repo.get!(Babel.Chat.Room, room_id)
       messages = Repo.all(from m in assoc(room, :messages),
@@ -19,6 +23,21 @@ defmodule BabelWeb.RoomChannel do
     end
   end
 
+  def handle_info(event, socket) do
+    user = Repo.get(Babel.Accounts.User, socket.assigns.user_id)
+    handle_info(event, user, socket)
+  end
+
+  def handle_info("after_join", user, socket) do
+    push socket, "presence_state", Presence.list(socket)  # Push currently joined list.
+    # Start to track the user has been joined to the channel.
+    {:ok, _} = Presence.track(socket, socket.assigns.user_id, %{
+      display_name: BabelWeb.UserView.display_name(user),
+      online_at: :os.system_time(:milli_seconds)
+    })
+    {:noreply, socket}
+  end
+  
   def handle_in(event, params, socket) do
     user = Repo.get(Babel.Accounts.User, socket.assigns.user_id)
     handle_in(event, params, user, socket)

@@ -10,7 +10,6 @@
 msgid ""
 msgstr ""
 
-#, elixir-format
 #: lib/babel_web/templates/room/show.html.eex:14
 msgid "send"
 msgstr ""
