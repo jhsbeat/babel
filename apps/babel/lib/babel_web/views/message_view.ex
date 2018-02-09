@@ -5,7 +5,8 @@ defmodule BabelWeb.MessageView do
     %{
       id: message.id,
       body: message.body,
-      user: render_one(message.user, BabelWeb.UserView, "user.json")
+      user: render_one(message.user, BabelWeb.UserView, "user.json"),
+      trans_backend: message.trans_backend
     }
   end
 end

@@ -59,3 +59,8 @@ $ mix phx.gen.channel Room
 ```shell
 $ mix phx.gen.presence
 ```
+
+#### Add trans_backend column to messages
+```shell
+$ mix ecto.gen.migration add_trans_backend_to_messages
+```

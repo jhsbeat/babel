@@ -52,6 +52,7 @@ defmodule BabelWeb.RoomChannel do
     case Repo.insert(changeset) do
       {:ok, message} ->
         broadcast_message(socket, message)
+        Task.start_link(fn -> translate_message_body(message, socket) end)
         {:reply, :ok, socket}
       {:error, changeset} ->
         {:reply, {:error, %{errors: changeset}}, socket}
@@ -62,6 +63,21 @@ defmodule BabelWeb.RoomChannel do
     message = Repo.preload(message, :user)
     rendered_message = Phoenix.View.render(BabelWeb.MessageView, "message.json", %{message: message})
     broadcast! socket, "new_message", rendered_message
+  end
+
+  defp translate_message_body(message, socket) do
+    for result <- Trans.translate(message.body, limit: 1, timeout: 10_000) do
+      attrs = %{body: result.text, trans_backend: result.backend}
+      trans_changeset = 
+        Repo.get!(Babel.Accounts.User, socket.assigns.user_id)
+          |> build_assoc(:messages, room_id: message.room_id)
+          |> Babel.Chat.Message.changeset(attrs)
+
+      case Repo.insert(trans_changeset) do
+        {:ok, trans_message} -> broadcast_message(socket, trans_message)
+        {:error, changeset} -> :ignore
+      end
+    end
   end
 
   # Add authorization logic here as required.

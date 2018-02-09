@@ -53,6 +53,7 @@ let Room = {
       .receive("error", resp => { console.log("Unable to join", resp) })
   },
   sendMessage(msgInput, roomChannel){
+    if(!msgInput.value){ return; }
     let message = {body: msgInput.value}
     roomChannel.push("new_message", message)
     msgInput.value = ""
@@ -67,14 +68,18 @@ let Room = {
       this.renderMessage(msgContainer, message)
     })
   },
-  renderMessage(msgContainer, {user, body}){
+  renderMessage(msgContainer, {user, body, trans_backend}){
     let template = document.createElement("div")
     // TODO : Compare user.id with current_user.id to set text-right class.
     if(user.id == -1){
       template.setAttribute("class", "text-right")
     }
+    let username = this.esc(user.display_name)
+    if(trans_backend){
+      username += `(${trans_backend})`
+    }
     template.innerHTML = `
-      <b>${this.esc(user.display_name)}</b>: ${this.esc(body)}
+      <b>${username}</b>: ${this.esc(body)}
     `
     msgContainer.appendChild(template)
     msgContainer.scrollTop = msgContainer.scrollHeight
