@@ -37,8 +37,7 @@ defmodule BabelWeb.RoomChannelTest do
     ref = push socket, "new_message", %{body: "한국"}
     assert_reply ref, :ok, %{}
     assert_broadcast "new_message", %{body: "한국"}
-    
-    # TODO : following assertion must pass after Trans OTP implementation.
-    # assert_broadcast "new_message", %{body: "Korea"}
+
+    assert_broadcast "new_message", %{body: "Korea", trans_backend: "PapagoNMT"}
   end
 end
