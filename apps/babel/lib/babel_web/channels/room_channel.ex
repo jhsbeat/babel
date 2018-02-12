@@ -1,21 +1,15 @@
 defmodule BabelWeb.RoomChannel do
   use BabelWeb, :channel
 
-  import Ecto.Query
-  import Ecto
-
   alias Babel.Repo
   alias BabelWeb.Presence
+  alias Babel.Chat
 
   def join("rooms:" <> room_id, payload, socket) do
     if authorized?(payload) do
       send(self(), "after_join")
       room_id = String.to_integer(room_id)
-      room = Repo.get!(Babel.Chat.Room, room_id)
-      messages = Repo.all(from m in assoc(room, :messages),
-                            order_by: [asc: m.inserted_at],
-                            limit: 200,
-                            preload: [:user])
+      messages = Chat.list_messages(room_id)
       resp = %{messages: Phoenix.View.render_many(messages, BabelWeb.MessageView, "message.json")}
       {:ok, resp, assign(socket, :room_id, room_id)}
     else
@@ -44,12 +38,8 @@ defmodule BabelWeb.RoomChannel do
   end
 
   def handle_in("new_message", message, user, socket) do
-    changeset = 
-      user
-      |> build_assoc(:messages, room_id: socket.assigns.room_id)
-      |> Babel.Chat.Message.changeset(message)
-
-    case Repo.insert(changeset) do
+    changeset = message |> Map.put("user_id", user.id) |> Map.put("room_id", socket.assigns.room_id)
+    case Chat.create_message(changeset) do
       {:ok, message} ->
         broadcast_message(socket, message)
         Task.start_link(fn -> translate_message_body(message, socket) end)
@@ -66,17 +56,10 @@ defmodule BabelWeb.RoomChannel do
   end
 
   defp translate_message_body(message, socket) do
-    for result <- Trans.translate(message.body, limit: 1, timeout: 10_000) do
-      attrs = %{body: result.text, trans_backend: result.backend}
-      trans_changeset = 
-        Repo.get!(Babel.Accounts.User, socket.assigns.user_id)
-          |> build_assoc(:messages, room_id: message.room_id)
-          |> Babel.Chat.Message.changeset(attrs)
-
-      case Repo.insert(trans_changeset) do
-        {:ok, trans_message} -> broadcast_message(socket, trans_message)
-        {:error, changeset} -> :ignore
-      end
+    with {:ok, trans_message} <- Chat.translate_and_create_message(message) do
+      broadcast_message(socket, trans_message)
+    else
+      {:error, _} -> :ignore
     end
   end
 

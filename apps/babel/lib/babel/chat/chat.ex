@@ -4,9 +4,11 @@ defmodule Babel.Chat do
   """
 
   import Ecto.Query, warn: false
+  import Ecto
   alias Babel.Repo
 
   alias Babel.Chat.Room
+  alias Babel.Chat.Message
 
   @doc """
   Returns the list of rooms.
@@ -100,5 +102,30 @@ defmodule Babel.Chat do
   """
   def change_room(%Room{} = room) do
     Room.changeset(room, %{})
+  end
+
+  def create_message(attrs \\ %{}) do
+    %Message{}
+    |> Message.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def list_messages(room_id) do
+    room = Repo.get!(Room, room_id)
+    Repo.all(from m in assoc(room, :messages),
+            order_by: [asc: m.inserted_at],
+            limit: 200,
+            preload: [:user])
+  end
+
+  def translate_and_create_message(message, opts \\ %{}) do
+    result = Trans.translate(message.body, limit: opts[:limit] || 1, timeout: opts[:timeout] || 10_000)
+             |> Enum.at(0)
+
+    attrs = %{body: result.text, trans_backend: result.backend}
+      Repo.get!(Babel.Accounts.User, message.user_id)
+        |> build_assoc(:messages, room_id: message.room_id)
+        |> Message.changeset(attrs)
+        |> Repo.insert
   end
 end
