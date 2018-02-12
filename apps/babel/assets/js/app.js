@@ -22,3 +22,8 @@ import socket from "./socket"
 import Room from "./room"
 
 Room.init(socket, document.getElementById("room"), Presence)
+
+const elmDiv = document.getElementById('elm-main')
+if(elmDiv){
+  const elmApp = Elm.Main.embed(elmDiv);
+}
