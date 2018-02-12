@@ -7,7 +7,7 @@ defmodule BabelWeb.RoomController do
 
   def index(conn, _params) do
     rooms = Chat.list_rooms()
-    render(conn, "index.html", rooms: rooms)
+    render(conn, rooms: rooms)
   end
 
   def new(conn, _params) do

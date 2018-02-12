@@ -29,5 +29,6 @@ defmodule BabelWeb.Router do
     pipe_through :api
 
     resources "/students", StudentController, except: [:new, :edit]
+    resources "/rooms", RoomController, only: [:index]
   end
 end

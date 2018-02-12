@@ -7,7 +7,7 @@ import Json.Decode.Pipeline exposing (decode, required)
 import Http
 
 import Data.Student exposing(studentDecoder, viewStudent)
-
+import Data.Room exposing(roomDecoder, viewRoom)
 
 type alias Model =
     { students : List Student
