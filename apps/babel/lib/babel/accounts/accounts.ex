@@ -4,6 +4,7 @@ defmodule Babel.Accounts do
   """
 
   import Ecto.Query, warn: false
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias Babel.Repo
 
   alias Babel.Accounts.User
@@ -101,4 +102,34 @@ defmodule Babel.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  @doc """
+  Check and returns the result of login by email and password.
+
+  ## Examples
+
+      iex> login_by_email_and_pass("email@address.com", "correct_password")
+      {:ok, %Babel.Accounts.User{ ... }}
+
+      iex> login_by_email_and_pass("email@address.com", "wrong_password")
+      {:error, :unauthorized}
+
+      iex> login_by_email_and_pass("not_exists@address.com", "wrong_password")
+      {:error, :not_found}
+
+  """
+  def login_by_email_and_pass(email, given_pass) do
+    user = Repo.get_by(User, email: email)
+
+    cond do
+      user && checkpw(given_pass, user.password_hash) ->
+        {:ok, user}
+      user ->
+        {:error, :unauthorized}
+      true ->
+        dummy_checkpw()
+        {:error, :not_found}
+    end
+  end
+
 end
