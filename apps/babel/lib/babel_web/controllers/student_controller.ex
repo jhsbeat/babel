@@ -8,7 +8,7 @@ defmodule BabelWeb.StudentController do
 
   def index(conn, _params) do
     students = Students.list_students()
-    render(conn, "index.json", students: students)
+    render(conn, students: students)
   end
 
   def create(conn, %{"student" => student_params}) do

@@ -6,22 +6,15 @@ import Json.Decode exposing (string, int, list, Decoder, at)
 import Json.Decode.Pipeline exposing (decode, required)
 import Http
 
-type alias Student =
-    { name : String
-    , age : Int
-    , subject : String
-    , classification : String
-    }
+import Data.Student exposing(studentDecoder, viewStudent)
 
 
 type alias Model =
     { students : List Student
     }
 
-
 type Msg
     = StudentData (Result Http.Error (List Student))
-
 
 initialModel : Model
 initialModel =
@@ -33,15 +26,6 @@ initialModel =
           }
         ]
     }
-
-
-studentDecoder : Decoder Student
-studentDecoder =
-    decode Student
-        |> required "name" string
-        |> required "age" int
-        |> required "subject" string
-        |> required "classification" string
 
 
 decodeList : Decoder (List Student)
@@ -64,15 +48,6 @@ initialCmd =
 init : ( Model, Cmd Msg )
 init =
     ( initialModel, initialCmd )
-
-
-viewStudent : Student -> Html Msg
-viewStudent student =
-    tr []
-        [ td [] [ text (student.name ++ " (" ++ toString student.age ++ ")") ]
-        , td [] [ text student.subject ]
-        , td [] [ text student.classification ]
-        ]
 
 
 view : Model -> Html Msg
