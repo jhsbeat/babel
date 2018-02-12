@@ -25,7 +25,9 @@ defmodule BabelWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", BabelWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", BabelWeb do
+    pipe_through :api
+
+    resources "/students", StudentController, except: [:new, :edit]
+  end
 end
