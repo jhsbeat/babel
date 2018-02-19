@@ -1,0 +1,21 @@
+# .deliver/config
+
+APP="babel"
+
+BUILD_HOST="local.babel.com"
+BUILD_USER="hosang"
+BUILD_AT="/tmp/edeliver/babel/builds"
+
+STAGING_HOSTS="stage.babel.com"
+STAGING_USER="hosang"
+DELIVER_TO="/Users/hosang/01.work/git/babel_build"
+
+# For *Phoenix* projects, symlink prod.secret.exs to our tmp source
+pre_erlang_get_and_update_deps() {
+  local _prod_secret_path="/Users/hosang/01.work/git/babel/apps/babel/config/prod.secret.exs"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+    "
+  fi
+}
