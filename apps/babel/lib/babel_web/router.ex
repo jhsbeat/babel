@@ -1,5 +1,6 @@
 defmodule BabelWeb.Router do
   use BabelWeb, :router
+  use Plug.ErrorHandler
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -28,4 +29,7 @@ defmodule BabelWeb.Router do
   # scope "/api", BabelWeb do
   #   pipe_through :api
   # end
+  def handle_errors(conn, %{kind: _kind, reason: reason, stack: stack}) do
+    Bugsnag.report(reason, stacktrace: stack)
+  end
 end

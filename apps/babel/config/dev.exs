@@ -48,4 +48,17 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
+# Open up your config/config.exs (or appropriate project config)
+config :bugsnag, api_key: "your_bugsnag_api_key"
+
+# Set the release stage in your environment configs (e.g. config/prod.exs)
+config :bugsnag, release_stage: "development"
+
+# Set the notify release stages to limit reporting the errors based on your environment
+# Defaults to ["production"]
+config :bugsnag, notify_release_stages: ["development"]
+
+# Set `use_logger: true` to report all uncaught exceptions (using Erlang SASL)
+config :bugsnag, use_logger: true
+
 import_config "dev.secret.exs"

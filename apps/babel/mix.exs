@@ -47,7 +47,7 @@ defmodule Babel.Mixfile do
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, ">= 0.0.0"},
-      {:trans, in_umbrella: true},
+      {:trans, in_umbrella: true}
     ]
   end
 
