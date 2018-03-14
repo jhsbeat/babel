@@ -24,7 +24,7 @@ defmodule Babel.Mixfile do
   def application do
     [
       mod: {Babel.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :bugsnag]
     ]
   end
 
@@ -48,6 +48,7 @@ defmodule Babel.Mixfile do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, ">= 0.0.0"},
       {:trans, in_umbrella: true},
+      {:bugsnag, "~> 1.5.0"}
     ]
   end
 
