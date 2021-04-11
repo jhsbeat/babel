@@ -1,5 +1,5 @@
 defmodule Babel.Repo do
-  use Ecto.Repo, otp_app: :babel
+  use Ecto.Repo, otp_app: :babel, adapter: Ecto.Adapters.Postgres
 
   @doc """
   Dynamically loads the repository url from the
