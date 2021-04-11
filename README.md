@@ -1,15 +1,15 @@
 # Babel
---
+---
 A Toy project to learn Elixir/Phoenix concepts of Content, Channel, OTP, etc.
 
 Elixir/Phoenix를 이용한 동시번역 채팅 애플리케이션 토이 프로젝트 (개발기간 2일)
 
---
+---
 ## Demo
 
 ![Babel Demo](https://raw.githubusercontent.com/jhsbeat/babel/master/apps/babel/assets/static/images/babel.gif)
 
---
+---
 ## Installation
 
 Install Elixir if you don't have:
