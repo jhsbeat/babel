@@ -1,8 +1,8 @@
 # Babel
 ---
-A Toy project to learn Elixir/Phoenix concepts of Content, Channel, OTP, etc.
+A project to explain Elixir/Phoenix concepts of Concurrency, Channel, OTP, etc.
 
-Elixir/Phoenix를 이용한 동시번역 채팅 애플리케이션 토이 프로젝트 (개발기간 2일)
+Elixir/Phoenix의 동시성과 채널, OTP 이해를 위한 동시번역 채팅 애플리케이션 프로젝트
 
 ---
 ## Demo
